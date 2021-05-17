@@ -8,9 +8,8 @@ blogRouter.use('/:blogId/comment', commentRouter);
 
 blogRouter.get('/', async (req, res) => {
     try {
-        const blogs = await Blog.find({})
-            .limit(20)
-            .populate([{ path: 'user' }, { path: 'comments', populate: { path: 'user' } }]);
+        const blogs = await Blog.find({}).limit(200);
+        //.populate([{ path: 'user' }, { path: 'comments', populate: { path: 'user' } }]);
         return res.status(200).send({ blogs });
     } catch (err) {
         console.error(err);
@@ -21,10 +20,10 @@ blogRouter.get('/', async (req, res) => {
 blogRouter.post('/', async (req, res) => {
     try {
         const { title, content, islive, userId } = req.body;
-        if (typeof title !== 'string') res.status(400).send({ err: 'title must be string' });
-        if (typeof content !== 'string') res.status(400).send({ err: 'content must be string' });
-        if (islive && typeof islive !== 'boolean') res.status(400).send({ err: 'live must be boolean' });
-        if (!isValidObjectId(userId)) res.status(400).send({ err: 'user is invaild ' });
+        if (typeof title !== 'string') return res.status(400).send({ err: 'title must be string' });
+        if (typeof content !== 'string') return res.status(400).send({ err: 'content must be string' });
+        if (islive && typeof islive !== 'boolean') return res.status(400).send({ err: 'live must be boolean' });
+        if (!isValidObjectId(userId)) return res.status(400).send({ err: 'user is invaild ' });
 
         let user = await User.findById(userId);
         //console.log(user); // 유저가 없으면 null 을 return 한다 -> Javascript 에서는 null 은 거짓값

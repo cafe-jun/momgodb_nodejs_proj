@@ -26,13 +26,26 @@ commentRouter.post('/', async (req, res) => {
 
         if (!user || !blog) res.status(404).send({ err: 'blog or user is not exist' });
         if (!blog.islive) res.status(400).send({ err: 'blog is not available ' });
-        const comment = new Comment({ blog, user, content });
-        await comment.save();
+        const comment = new Comment({ blog, user, userFullName: `${user.name.first} ${user.name.last}`, content });
+        await Promise.all([comment.save(), Blog.updateOne({ _id: blogId }, { $push: { comments: comment } })]);
         return res.status(200).send({ comment });
     } catch (err) {
         console.error(err);
         return res.status(500).send({ err: err.message });
     }
+});
+
+commentRouter.patch('/:commentId', async (req, res) => {
+    const { commentId } = req.params;
+    const { content } = req.body;
+    if (typeof content !== 'string') {
+        return res.status(400).send({ err: 'content is required' });
+    }
+    const [comment] = await Promise.all([
+        Comment.findByIdAndUpdate({ _id: commentId }, { content }, { new: true }),
+        Blog.updateOne({ 'comments._id': commentId }, { 'comments.$.content': content }),
+    ]); // 복잡한 문서를 document를 수정 삭제가 쉽다
+    return res.send({ comment });
 });
 
 module.exports = { commentRouter };

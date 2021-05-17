@@ -1,5 +1,6 @@
 const { Router } = require('express');
-const { User } = require('../models');
+const { User, Blog } = require('../models');
+
 const userRouter = Router();
 const mongoose = require('mongoose');
 
@@ -51,7 +52,23 @@ userRouter.put('/:userId', async (req, res) => {
         const user = await User.findById(userId);
         console.log(`Before Edit User Info `, user);
         if (age) user.age = age;
-        if (name) user.name = name;
+        // 블로그에 유저 정보가 변경되었을때
+        if (name) {
+            user.name = name;
+            await Promise.all([
+                Blog.updateMany({ 'user._id': userId }, { 'user.name': name }),
+                Blog.updateMany(
+                    { 'comments.$[comment].userFullName': `${name.first} ${name.last}` },
+                    { arrayFilters: [{ 'comment.user': userId }] },
+                ),
+            ]);
+            //await Blog.updateMany({ 'user._id': userId }, { 'user.name': name });
+            // comment 의 안에 여러개의 유저 데이터를 변형해야 한다
+            // await Blog.updateMany(
+            //     { 'comments.$[comment].userFullName': `${name.first} ${name.last}` },
+            //     { arrayFilters: [{ 'comment.user': userId }] },
+            // );
+        }
         console.log(`After Edit User Info `, user);
         await user.save();
         return res.status(200).send({ user });
