@@ -18,10 +18,14 @@ const BlogSchema = new Schema(
         //     required: true,
         //     ref: 'user',
         // },
-        comments: [CommentSchema],
+        // comments: [CommentSchema],
     },
     { timestamps: true },
 );
+
+BlogSchema.index({ 'user._id': 1, updatedAt: 1 });
+BlogSchema.index({ title: 'text', content: 'text' });
+
 // BlogSchema.virtual('comments', {
 //     ref: 'comment',
 //     localField: '_id',

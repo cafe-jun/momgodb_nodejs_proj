@@ -8,8 +8,24 @@ blogRouter.use('/:blogId/comment', commentRouter);
 
 blogRouter.get('/', async (req, res) => {
     try {
-        const blogs = await Blog.find({}).limit(200);
+        let { page } = req.query;
+        page = parseInt(page);
+        let blogs = await Blog.find({})
+            .sort({ updatedAt: -1 })
+            .skip(page * 3)
+            .limit(3);
+        // N+1 Problem 을 해결하기위한 poplutae 사용
         //.populate([{ path: 'user' }, { path: 'comments', populate: { path: 'user' } }]);
+        // example
+        // .populate([
+        //     { path: "user", select: "name fullName"},
+        //     {
+        //         path: "comments",
+        //         select : "content",
+        //         match : { user : "lkadsnfalskdnf"},
+        //         populate: { path: "user", select : "name fullName"}
+        //     }
+        // ])
         return res.status(200).send({ blogs });
     } catch (err) {
         console.error(err);
