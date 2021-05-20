@@ -9,8 +9,10 @@ const { generateFakeData } = require("./generateFaker2")
 const server = async () => {
   //mongoose.set('debug', true);
   try {
-    const { MONGO_URL } = process.env
+    const { MONGO_URL, PORT } = process.env
     if (!MONGO_URL) throw new Error("MONGO_URL is required!! ")
+    if (!PORT) throw new Error("PORT is required!! ")
+
     await mongoose.connect(MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -20,8 +22,8 @@ const server = async () => {
     app.use(express.json())
     app.use("/user", userRouter)
     app.use("/blog", blogRouter)
-    app.listen(3000, async () => {
-      console.log("Listen Express Server 3000 Port")
+    app.listen(PORT, async () => {
+      console.log(`Listen Express Server ${PORT} Port`)
       // for (let i = 0; i < 20; i++) {
       //     await generateFakeData(10, 1, 10);
       // }
