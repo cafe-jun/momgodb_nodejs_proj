@@ -61,7 +61,7 @@ blogRouter.get("/:blogId", async (req, res) => {
     if (!isValidObjectId(blogId)) res.status(400).send({ err: "blog is invaild " })
     const blog = await Blog.findOne({ _id: blogId })
     const commentCount = await Comment.find({ blog: blogId }).countDocuments()
-    return res.status(200).send({ blog })
+    return res.status(200).send({ blog, commentCount })
   } catch (err) {
     console.error(err)
     res.status(500).send({ err: err.message })
