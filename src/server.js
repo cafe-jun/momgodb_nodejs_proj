@@ -7,11 +7,11 @@ const { userRouter, blogRouter } = require("./routes")
 const { generateFakeData } = require("./generateFaker2")
 
 const server = async () => {
-  const MONGODB_URL =
-    "mongodb+srv://jsshin:b3PL4Hz99AgAFvN@cluster0.i5taf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   //mongoose.set('debug', true);
   try {
-    await mongoose.connect(MONGODB_URL, {
+    const { MONGO_URL } = process.env
+    if (!MONGO_URL) throw new Error("MONGO_URL is required!! ")
+    await mongoose.connect(MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
