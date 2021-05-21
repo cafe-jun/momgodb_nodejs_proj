@@ -10,6 +10,7 @@ blogRouter.get('/', async (req, res) => {
     try {
         let { page } = req.query;
         page = parseInt(page);
+        // pageNation
         let blogs = await Blog.find({})
             .sort({ updatedAt: -1 })
             .skip(page * 3)
