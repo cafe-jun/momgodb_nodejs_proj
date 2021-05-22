@@ -1,21 +1,23 @@
 {
-    "name": "v1",
-    "version": "1.0.0",
-    "description": "",
-    "main": "server.js",
-    "scripts": {
-        "dev": "nodemon --ignore client.js src/server.js"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^0.21.1",
-        "express": "^4.17.1",
-        "mongoose": "^5.12.7"
-    },
-    "devDependencies": {
-        "faker": "^5.5.3",
-        "nodemon": "^2.0.7"
-    }
+  "name": "v1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "env-cmd nodemon --ignore client.js src/server.js",
+    "start": "env-cmd node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.7"
+  },
+  "devDependencies": {
+    "faker": "^5.5.3",
+    "nodemon": "^2.0.7"
+  }
 }
